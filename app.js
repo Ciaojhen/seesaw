@@ -23,6 +23,7 @@ const ICON = {
   back: svgIcon('<path d="m15 18-6-6 6-6"/>'),
   gear: svgIcon('<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>'),
   pencil: svgIcon('<path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/><path d="m14.5 5.5 3 3"/>'),
+  share: svgIcon('<path d="M12 3v12"/><path d="m8 7 4-4 4 4"/><path d="M8 11H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-2"/>'),
   trash: svgIcon('<path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4h6v3"/>'),
 };
 
@@ -480,7 +481,7 @@ function renderDetail(r) {
       ${seen && !r.text && !r.oneLiner && !r.quote ? `<button class="empty-note" data-act="edit" data-id="${r.id}">還沒寫心得，點這裡補上 ✍️</button>` : ''}
       <div class="actions">
         ${seen ? '' : `<button class="btn" data-act="watched" data-id="${r.id}">✓ 看完了，寫心得</button>`}
-        <button class="btn ghost" data-act="share" data-id="${r.id}">📤 分享${seen ? '心得' : ''}</button>
+        <button class="btn ghost with-icon" data-act="share" data-id="${r.id}">${ICON.share}分享${seen ? '心得' : ''}</button>
       </div>
     </main>`;
   hydratePhotos(app);

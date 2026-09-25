@@ -291,6 +291,8 @@ a { color: inherit; }
   display: block; width: 100%; text-align: center; border: 0; border-radius: 14px; padding: 13px;
   background: var(--accent); color: #fff; font-weight: 700; font-size: 16px; cursor: pointer; margin-top: 10px; text-decoration: none;
 }
+.btn.with-icon { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.btn.with-icon svg { width: 20px; height: 20px; }
 .btn.ghost { background: var(--card); color: var(--text); border: 1px solid var(--line); font-weight: 600; }
 .danger { display: block; width: 100%; border: 0; background: none; color: var(--danger); padding: 14px; font-size: 15px; cursor: pointer; margin-top: 6px; }
 .hint { font-size: 13px; color: var(--muted); margin: 6px 4px 12px; line-height: 1.6; }
