@@ -35,4 +35,4 @@ npx http-server -p 5174 -c-1
 - **Android**：用 Chrome 開啟 → ⋮ → 「安裝應用程式」
 
 ## 更新程式後
-修改 `sw.js` 裡的 `CACHE` 版本號（例如 `seesaw-v8` → `seesaw-v9`），推上 GitHub 即可。
+修改 `sw.js` 裡的 `CACHE` 版本號（例如 `seesaw-v9` → `seesaw-v10`），推上 GitHub 即可。

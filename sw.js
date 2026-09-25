@@ -1,6 +1,6 @@
 // 離線快取：讓 App 在沒有網路時（例如在電影院裡收訊不好）也能打開
 // 修改下面清單裡的檔案後，把版本號 +1
-const CACHE = 'seesaw-v8';
+const CACHE = 'seesaw-v9';
 const ASSETS = [
   './',
   './index.html',

@@ -50,7 +50,7 @@ a { color: inherit; }
   backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
 }
 .bar { display: flex; align-items: center; gap: 10px; max-width: 760px; margin: 0 auto; padding: 10px 16px; }
-.brand { flex: 1; font-size: 21px; padding-top: 2px; }
+.brand { flex: 1; font-size: 17px; padding-top: 2px; }
 
 /* ---------- 名稱：小寫 seesaw 當蹺蹺板的板子，下面三角形撐著 ---------- */
 .logo { display: inline-flex; flex-direction: column; align-items: center; line-height: 1; }
@@ -312,7 +312,7 @@ a { color: inherit; }
   display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
 }
 .login-icon { width: 88px; height: 88px; border-radius: 22px; box-shadow: var(--shadow); }
-.login h1 { font-size: 32px; margin: 18px 0 14px; letter-spacing: -.02em; }
+.login h1 { font-size: 26px; margin: 18px 0 14px; letter-spacing: -.02em; }
 .login > p { color: var(--muted); margin: 0 0 32px; }
 .login .hint { margin-top: 18px; }
 .google-btn {
