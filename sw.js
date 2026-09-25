@@ -1,6 +1,6 @@
 // 離線快取：讓 App 在沒有網路時（例如在電影院裡收訊不好）也能打開
 // 修改下面清單裡的檔案後，把版本號 +1
-const CACHE = 'seesaw-v5';
+const CACHE = 'seesaw-v6';
 const ASSETS = [
   './',
   './index.html',
@@ -15,7 +15,8 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  // GitHub Pages 會讓瀏覽器暫存檔案 10 分鐘，這裡指定 no-cache 一定跟伺服器確認，才不會把舊檔存成新版
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS.map((u) => new Request(u, { cache: 'no-cache' })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (e) => {
@@ -35,7 +36,7 @@ self.addEventListener('fetch', (e) => {
   // 有網路就拿最新版（最多等 3 秒），沒網路或太慢就用快取
   e.respondWith(
     caches.open(CACHE).then(async (cache) => {
-      const network = fetch(req).then((res) => {
+      const network = fetch(req, { cache: 'no-cache' }).then((res) => {
         if (res.ok) cache.put(req, res.clone());
         return res;
       });
