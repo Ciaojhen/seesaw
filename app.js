@@ -20,6 +20,8 @@ const WEEK = '日一二三四五六';
 // 線條圖示（顏色跟著文字色）
 const svgIcon = (d) => `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const ICON = {
+  back: svgIcon('<path d="m15 18-6-6 6-6"/>'),
+  gear: svgIcon('<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>'),
   pencil: svgIcon('<path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/><path d="m14.5 5.5 3 3"/>'),
   trash: svgIcon('<path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4h6v3"/>'),
 };
@@ -342,7 +344,7 @@ function renderHome() {
     <header class="topbar">
       <div class="bar">
         <div class="brand">Seesaw</div>
-        <button class="icon-btn" data-act="settings" aria-label="設定與備份">⚙️</button>
+        <button class="line-btn" data-act="settings" aria-label="設定與備份">${ICON.gear}</button>
       </div>
       <nav class="tabs">${TABS.map(([k, l]) => `<button class="tab ${ui.tab === k ? 'on' : ''}" data-act="tab" data-tab="${k}">${l}</button>`).join('')}</nav>
     </header>
@@ -452,7 +454,7 @@ function renderDetail(r) {
 
   app.innerHTML = `
     <header class="topbar"><div class="bar">
-      <a class="icon-btn" href="#/" aria-label="返回">‹</a>
+      <a class="line-btn back" href="#/" aria-label="返回">${ICON.back}</a>
       <div class="title"><b>${esc(r.title)}</b><small>${seen ? '看過' : '想看'}</small></div>
       <button class="line-btn" data-act="edit" data-id="${r.id}" aria-label="編輯">${ICON.pencil}</button>
       <button class="line-btn" data-act="del" data-id="${r.id}" aria-label="刪除">${ICON.trash}</button>
