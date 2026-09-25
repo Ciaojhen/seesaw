@@ -17,6 +17,8 @@ const MOODS = ['😍', '🥹', '😭', '🤯', '😱', '😂', '🤔', '😴'];
 const PLATFORMS = ['威秀影城', '秀泰影城', '國賓影城', '美麗華影城', 'Netflix', 'Disney+', 'HBO Max', 'Apple TV+', 'Prime Video', 'friDay影音', 'CATCHPLAY+', 'MyVideo', '愛奇藝'];
 const TABS = [['seen', '看過'], ['want', '想看'], ['stats', '統計']];
 const WEEK = '日一二三四五六';
+// 名稱設計：小寫 seesaw 當作蹺蹺板的板子，下面用三角形撐著
+const LOGO = '<span class="logo" role="img" aria-label="seesaw"><span class="plank" aria-hidden="true">seesaw</span><svg class="fulcrum" viewBox="0 0 20 16" aria-hidden="true"><path d="M10 2.5 17.5 14h-15Z" fill="currentColor" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg></span>';
 // 線條圖示（顏色跟著文字色）
 const svgIcon = (d) => `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const ICON = {
@@ -311,11 +313,11 @@ async function doSync() {
 const app = $('#app');
 
 function renderLogin() {
-  document.title = 'Seesaw';
+  document.title = 'seesaw';
   app.innerHTML = `
     <main class="login">
       <img src="icons/icon-192.png" alt="" class="login-icon">
-      <h1>Seesaw</h1>
+      <h1>${LOGO}</h1>
       <p>記下每一部看過的電影，和看完的心情</p>
       <button class="google-btn" data-act="login">
         <svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
@@ -339,12 +341,12 @@ function route() {
 
 /* ---- 首頁 ---- */
 function renderHome() {
-  document.title = 'Seesaw';
+  document.title = 'seesaw';
   const fab = { seen: '＋ 記一部', want: '＋ 想看', stats: '' }[ui.tab];
   app.innerHTML = `
     <header class="topbar">
       <div class="bar">
-        <div class="brand">Seesaw</div>
+        <div class="brand">${LOGO}</div>
         <button class="line-btn" data-act="settings" aria-label="設定與備份">${ICON.gear}</button>
       </div>
       <nav class="tabs">${TABS.map(([k, l]) => `<button class="tab ${ui.tab === k ? 'on' : ''}" data-act="tab" data-tab="${k}">${l}</button>`).join('')}</nav>
@@ -441,7 +443,7 @@ function wantRow(r) {
 
 /* ---- 單部片 ---- */
 function renderDetail(r) {
-  document.title = `${r.title} - Seesaw`;
+  document.title = `${r.title} - seesaw`;
   const t = TYPES[r.type] || TYPES.movie;
   const w = WHERE[r.where];
   const seen = r.kind === 'seen';
@@ -796,13 +798,13 @@ async function exportData() {
   }
   const data = { app: 'seesaw', version: 1, exportedAt: new Date().toISOString(), reviews, photos };
   const file = new File([JSON.stringify(data)], `seesaw-備份-${todayISO()}.json`, { type: 'application/json' });
-  await shareFile(file, 'Seesaw 備份');
+  await shareFile(file, 'seesaw 備份');
 }
 
 async function importData(file) {
   try {
     const data = JSON.parse(await file.text());
-    if (data.app !== 'seesaw' || !Array.isArray(data.reviews)) throw new Error('這不是 Seesaw 的備份檔');
+    if (data.app !== 'seesaw' || !Array.isArray(data.reviews)) throw new Error('這不是 seesaw 的備份檔');
     if (!confirm(`備份內有 ${data.reviews.length} 部片。\n相同的紀錄會被備份內容覆蓋，確定還原？`)) return;
     for (const p of data.photos || []) await savePhoto(p.id, await (await fetch(p.data)).blob());
     for (const r of data.reviews) await saveReview(r);
@@ -827,7 +829,7 @@ async function shareReview(r) {
     text += `🍿 想看${r.platform ? `・${r.platform}` : ''}\n${r.oneLiner ? `\n${r.oneLiner}\n` : ''}`;
   }
   if (r.tags?.length) text += `\n${r.tags.map((g) => '#' + g).join(' ')}\n`;
-  text += '\n— 記錄於 Seesaw 觀影筆記';
+  text += '\n— 記錄於 seesaw 觀影筆記';
   if (navigator.share) {
     try { await navigator.share({ title: r.title, text }); return; } catch (err) { if (err.name === 'AbortError') return; }
   }

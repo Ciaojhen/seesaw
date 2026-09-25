@@ -1,6 +1,6 @@
 {
-  "name": "Seesaw 觀影筆記",
-  "short_name": "Seesaw",
+  "name": "seesaw 觀影筆記",
+  "short_name": "seesaw",
   "description": "記錄每一部看過的電影與觀後心得",
   "lang": "zh-Hant",
   "start_url": "./",

@@ -50,8 +50,12 @@ a { color: inherit; }
   backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
 }
 .bar { display: flex; align-items: center; gap: 10px; max-width: 760px; margin: 0 auto; padding: 10px 16px; }
-.brand { flex: 1; font-weight: 800; font-size: 26px; letter-spacing: -.02em; }
-.brand span { font-size: 13px; font-weight: 500; color: var(--muted); margin-left: 8px; letter-spacing: 0; }
+.brand { flex: 1; font-size: 26px; padding-top: 2px; }
+
+/* ---------- 名稱：小寫 seesaw 當蹺蹺板的板子，下面三角形撐著 ---------- */
+.logo { display: inline-flex; flex-direction: column; align-items: center; line-height: 1; }
+.logo .plank { display: block; font-weight: 800; letter-spacing: -.02em; transform: rotate(6deg); }
+.logo .fulcrum { display: block; width: .72em; height: .56em; margin-top: -.08em; color: var(--accent); }
 .line-btn {
   flex: none; width: 36px; height: 40px; border: 0; background: none; padding: 0;
   display: grid; place-items: center; color: var(--text); cursor: pointer;
@@ -308,7 +312,7 @@ a { color: inherit; }
   display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
 }
 .login-icon { width: 88px; height: 88px; border-radius: 22px; box-shadow: var(--shadow); }
-.login h1 { font-size: 32px; margin: 18px 0 2px; letter-spacing: -.02em; }
+.login h1 { font-size: 40px; margin: 18px 0 14px; letter-spacing: -.02em; }
 .login > p { color: var(--muted); margin: 0 0 32px; }
 .login .hint { margin-top: 18px; }
 .google-btn {
