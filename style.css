@@ -57,6 +57,11 @@ a { color: inherit; }
   background: var(--card); box-shadow: var(--shadow);
   display: grid; place-items: center; font-size: 18px; text-decoration: none; cursor: pointer;
 }
+.line-btn {
+  flex: none; width: 36px; height: 40px; border: 0; background: none; padding: 0;
+  display: grid; place-items: center; color: var(--text); cursor: pointer;
+}
+.line-btn:active { opacity: .5; }
 .title { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.3; }
 .title b { font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .title small { color: var(--muted); font-size: 12px; }

@@ -17,6 +17,12 @@ const MOODS = ['😍', '🥹', '😭', '🤯', '😱', '😂', '🤔', '😴'];
 const PLATFORMS = ['威秀影城', '秀泰影城', '國賓影城', '美麗華影城', 'Netflix', 'Disney+', 'HBO Max', 'Apple TV+', 'Prime Video', 'friDay影音', 'CATCHPLAY+', 'MyVideo', '愛奇藝'];
 const TABS = [['seen', '看過'], ['want', '想看'], ['stats', '統計']];
 const WEEK = '日一二三四五六';
+// 線條圖示（顏色跟著文字色）
+const svgIcon = (d) => `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const ICON = {
+  pencil: svgIcon('<path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/><path d="m14.5 5.5 3 3"/>'),
+  trash: svgIcon('<path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4h6v3"/>'),
+};
 
 /* ============ 小工具 ============ */
 const $ = (s, el = document) => el.querySelector(s);
@@ -335,7 +341,7 @@ function renderHome() {
   app.innerHTML = `
     <header class="topbar">
       <div class="bar">
-        <div class="brand">Seesaw<span>觀影筆記</span></div>
+        <div class="brand">Seesaw</div>
         <button class="icon-btn" data-act="settings" aria-label="設定與備份">⚙️</button>
       </div>
       <nav class="tabs">${TABS.map(([k, l]) => `<button class="tab ${ui.tab === k ? 'on' : ''}" data-act="tab" data-tab="${k}">${l}</button>`).join('')}</nav>
@@ -448,7 +454,8 @@ function renderDetail(r) {
     <header class="topbar"><div class="bar">
       <a class="icon-btn" href="#/" aria-label="返回">‹</a>
       <div class="title"><b>${esc(r.title)}</b><small>${seen ? '看過' : '想看'}</small></div>
-      <button class="icon-btn" data-act="edit" data-id="${r.id}" aria-label="編輯">✏️</button>
+      <button class="line-btn" data-act="edit" data-id="${r.id}" aria-label="編輯">${ICON.pencil}</button>
+      <button class="line-btn" data-act="del" data-id="${r.id}" aria-label="刪除">${ICON.trash}</button>
     </div></header>
     <main class="page detail">
       <section class="hero">
