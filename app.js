@@ -99,10 +99,10 @@ const DB = {
   get: (s, id) => DB.run(s, 'readonly', (tx) => tx.objectStore(s).get(id)),
   put: (s, v) => DB.run(s, 'readwrite', (tx) => tx.objectStore(s).put(v)),
   del: (s, id) => DB.run(s, 'readwrite', (tx) => tx.objectStore(s).delete(id)),
-  replaceReviews: (list) => DB.run('reviews', 'readwrite', (tx) => {
+  applyReviews: (puts, dels) => DB.run('reviews', 'readwrite', (tx) => {
     const o = tx.objectStore('reviews');
-    o.clear();
-    list.forEach((r) => o.put(r));
+    puts.forEach((r) => o.put(r));
+    dels.forEach((id) => o.delete(id));
   }),
   clear: () => DB.run(['reviews', 'photos'], 'readwrite', (tx) => {
     tx.objectStore('reviews').clear();
@@ -123,10 +123,26 @@ const pending = {
 
 const cloud = {
   path: (id) => `${user.id}/${id}.jpg`,
-  async listReviews() {
-    const { data, error } = await sb.from(TABLE).select('data');
-    if (error) throw error;
-    return data.map((r) => r.data);
+  // 每部片只拿 id 和更新時間（很小），用來判斷哪些有變動、哪些被刪掉
+  // Supabase 一次最多回傳 1000 筆，所以分頁拿
+  async listIndex() {
+    const out = [];
+    for (let from = 0; ; from += 1000) {
+      const { data, error } = await sb.from(TABLE).select('id, updated_at').order('id').range(from, from + 999);
+      if (error) throw error;
+      out.push(...data);
+      if (data.length < 1000) return out;
+    }
+  },
+  // 只下載有變動的心得內容，每次 100 部
+  async getReviews(ids) {
+    const out = [];
+    for (let i = 0; i < ids.length; i += 100) {
+      const { data, error } = await sb.from(TABLE).select('data, updated_at').in('id', ids.slice(i, i + 100));
+      if (error) throw error;
+      out.push(...data.map((row) => ({ ...row.data, updatedAt: Date.parse(row.updated_at) })));
+    }
+    return out;
   },
   async saveReview(r) {
     const { error } = await sb.from(TABLE).upsert({ user_id: user.id, id: r.id, data: r, updated_at: new Date(r.updatedAt || Date.now()).toISOString() });
@@ -244,18 +260,39 @@ async function doSync() {
   for (const id of p.delReviews) await cloud.deleteReview(id);
   pending.drop('delReviews', p.delReviews);
 
-  // 2. 再抓雲端最新資料（同步途中又有新修改的，保留手機上的版本）
-  const remote = await cloud.listReviews();
-  const still = pending.load();
-  const map = new Map(remote.map((r) => [r.id, r]));
-  reviews.filter((r) => still.reviews.includes(r.id)).forEach((r) => map.set(r.id, r));
-  still.delReviews.forEach((id) => map.delete(id));
-  const merged = [...map.values()];
-  const key = (list) => JSON.stringify([...list].sort((a, b) => a.id.localeCompare(b.id)));
-  const changed = key(merged) !== key(reviews);
+  // 2. 再抓雲端最新資料：先比對每部片的更新時間，只下載有變動的內容
+  const index = await cloud.listIndex();
+  const isPending = (id, p) => p.reviews.includes(id) || p.delReviews.includes(id);
+  const known = new Map(reviews.map((r) => [r.id, r.updatedAt]));
+  let still = pending.load();
+  const need = index.filter((x) => known.get(x.id) !== Date.parse(x.updated_at) && !isPending(x.id, still)).map((x) => x.id);
+  const fetched = await cloud.getReviews(need);
+
+  // 下載途中又有新修改的，保留手機上的版本
+  still = pending.load();
+  const remoteIds = new Set(index.map((x) => x.id));
+  const map = new Map(reviews.map((r) => [r.id, r]));
+  const puts = [];
+  const dels = [];
+  const stalePhotos = [];
+  for (const r of fetched) {
+    if (isPending(r.id, still)) continue;
+    const old = map.get(r.id);
+    if (old?.poster && old.poster !== r.poster) stalePhotos.push(old.poster); // 其他裝置換了海報
+    map.set(r.id, r);
+    puts.push(r);
+  }
+  for (const [id, r] of map) {
+    if (remoteIds.has(id) || still.reviews.includes(id)) continue; // 其他裝置刪掉的
+    if (r.poster) stalePhotos.push(r.poster);
+    map.delete(id);
+    dels.push(id);
+  }
+  const changed = puts.length > 0 || dels.length > 0;
   if (changed) {
-    await DB.replaceReviews(merged);
-    reviews = merged;
+    reviews = [...map.values()];
+    await DB.applyReviews(puts, dels);
+    for (const id of stalePhotos) { forgetPhoto(id); await DB.del('photos', id); }
   }
   lastSync = Date.now();
   return changed;
@@ -701,10 +738,10 @@ function compressImage(file, max, quality) {
     img.src = url;
   });
 }
-// 海報壓縮到約 400 KB 以下，省雲端空間也上傳得快
+// 海報壓縮到約 150 KB 以下，省雲端空間也上傳得快（海報牆只顯示小圖，800px 放大看也夠清楚）
 async function photoForCloud(file) {
-  let blob = await compressImage(file, 1200, 0.78);
-  if (blob.size > 400_000) blob = await compressImage(file, 900, 0.65);
+  let blob = await compressImage(file, 800, 0.72);
+  if (blob.size > 150_000) blob = await compressImage(file, 640, 0.6);
   return blob;
 }
 async function hydratePhotos(root) {
